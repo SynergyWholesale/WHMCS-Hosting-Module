@@ -14,10 +14,6 @@ ifneq ($(.SHELLSTATUS), 0)
 endif
 
 VERSION := $(firstword $(subst -, ,${VERSION}))
-	
-build-assets:
-	npm run-script build
-
 
 replace:
 	sed -i${SED_PARAM} "s/{{VERSION}}/${VERSION}/g" "README.txt"

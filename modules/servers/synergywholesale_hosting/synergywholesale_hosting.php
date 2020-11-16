@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Synergy Wholesale Hosting Module
+ *
+ * @copyright Copyright (c) Synergy Wholesale Pty Ltd 2020
+ * @license https://github.com/synergywholesale/whmcs-hosting-module/LICENSE
+ */
+
 use WHMCS\Database\Capsule as DB;
 
 define('API_ENDPOINT', 'https://{{API}}');

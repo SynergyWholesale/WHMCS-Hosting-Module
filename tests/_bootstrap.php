@@ -1,17 +1,15 @@
 <?php
+
 /**
- * Synergy Wholesale Registrar Module
+ * Synergy Wholesale Hosting Module
  *
  * @copyright Copyright (c) Synergy Wholesale Pty Ltd 2020
- * @license https://github.com/synergywholesale/whmcs-domains-module/LICENSE
+ * @license https://github.com/synergywholesale/whmcs-hosting-module/LICENSE
  */
 
 if (!defined('WHMCS')) {
     define('WHMCS', true);
 }
-
-// Import polyfill classes
-require_once __DIR__ . '/polyfill.php';
 
 // Include the module.
 require_once __DIR__ . '/../modules/servers/synergywholesale_hosting/synergywholesale_hosting.php';

@@ -5,7 +5,7 @@ namespace SynergyWholesale\WHMCS\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Synergy Wholesale Registrar Module Test
+ * Synergy Wholesale Hosting Module Test
  *
  * PHPUnit test that asserts the fundamental requirements of a WHMCS
  * registrar module.
@@ -13,10 +13,10 @@ use PHPUnit\Framework\TestCase;
  * Custom module tests are added in addtion.
  *
  * @copyright Copyright (c) Synergy Wholesale Pty Ltd 2020
- * @license https://github.com/synergywholesale/whmcs-domains-module/LICENSE
+ * @license https://github.com/synergywholesale/whmcs-hosting-module/LICENSE
  */
 
-class SynergyWholesaleDomainModuleTest extends TestCase
+class SynergyWholesaleHostingModuleTest extends TestCase
 {
     public static function providerCoreFunctionNames()
     {
