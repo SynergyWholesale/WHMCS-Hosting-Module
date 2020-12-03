@@ -801,7 +801,7 @@ function synergywholesale_hosting_UsageUpdate($params, $page = 1)
             ->join('tblcustomfieldsvalues', 'tblhosting.id', '=', 'tblcustomfieldsvalues.relid')
             ->join('tblcustomfields', 'tblcustomfields.id', '=', 'tblcustomfieldsvalues.fieldid')
             ->where('tblcustomfields.fieldname', '=', 'Hosting Id')
-            ->where('tblhosting.domain', '=', $service->domain)
+            ->where('tblcustomfieldsvalues.value', '=', $service->hoid)
             ->select('tblhosting.id')
             ->first();
 
