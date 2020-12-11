@@ -645,10 +645,28 @@ function synergywholesale_hosting_ClientArea($params)
     ];
 }
 
+function synergywholesale_hosting_ServiceSingleSignOn(array $params)
+{
+    $url = synergywholesale_hosting_get_login($params);
+
+    if (! $url) {
+        return [
+            'success' => false,
+            'errorMsg' => 'Failed to login to service.',
+        ];
+    }
+
+    return [
+        'success' => true,
+        'redirectTo' => $url,
+    ];
+}
+
 function synergywholesale_hosting_LoginLink($params)
 {
     return '<button type="button" class="btn btn-primary" onclick="runModuleCommand(\'custom\',\'login\')" id="btnLogin">Login</button>';
 }
+
 function synergywholesale_hosting_login($params)
 {
     $url = synergywholesale_hosting_get_login($params);
