@@ -13,7 +13,14 @@ Synergy Wholesale WHMCS Hosting Module
 -
 
 ### Removed
--
+
+## 1.6.2 [Updated 11/12/2020]
+### Fixed
+- Resolved issue logging into service in WHMCS admin area
+
+## 1.6.1 [Updated 03/12/2020]
+### Fixed
+- Resolved issue with syncing hosting service resource usage stats
 
 ## 1.6.0 [Updated 16/11/2020]
 ### Added 

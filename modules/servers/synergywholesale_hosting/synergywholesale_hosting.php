@@ -564,6 +564,23 @@ function synergywholesale_hosting_ClientArea($params)
     ];
 }
 
+function synergywholesale_hosting_ServiceSingleSignOn(array $params)
+{
+    $url = synergywholesale_hosting_cpanel_login($params);
+
+    if (! $url) {
+        return [
+            'success' => false,
+            'errorMsg' => 'Failed to login to service.',
+        ];
+    }
+
+    return [
+        'success' => true,
+        'redirectTo' => $url,
+    ];
+}
+
 function synergywholesale_hosting_LoginLink($params)
 {
     $url = synergywholesale_hosting_cpanel_login($params);
