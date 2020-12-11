@@ -790,7 +790,7 @@ function synergywholesale_hosting_ClientAreaCustomButtonArray($params)
     }
 }
 
-function synergywholesale_hosting_TempUrl($params)
+function synergywholesale_hosting_tempurl($params)
 {
     $resellerId = $params['configoption2'];
     $apiKey = $params['configoption1'];
