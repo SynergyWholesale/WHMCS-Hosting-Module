@@ -662,17 +662,6 @@ function synergywholesale_hosting_ServiceSingleSignOn(array $params)
     ];
 }
 
-function synergywholesale_hosting_LoginLink($params)
-{
-    return '<button type="button" class="btn btn-primary" onclick="runModuleCommand(\'custom\',\'login\')" id="btnLogin">Login</button>';
-}
-
-function synergywholesale_hosting_login($params)
-{
-    $url = synergywholesale_hosting_get_login($params);
-    return ($url ? 'window|' . $url : 'Please contact support.');
-}
-
 function synergywholesale_hosting_client_login($params)
 {
     $url = synergywholesale_hosting_get_login($params);
