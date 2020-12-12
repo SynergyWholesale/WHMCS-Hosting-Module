@@ -14,6 +14,13 @@ Synergy Wholesale WHMCS Hosting Module
 
 ### Removed
 
+## 1.6.3 [Updated 12/12/2020]
+### Fixed
+- Resolved an issue logging into services in the WHMCS client area when using certain themes or server configurations
+- Resolved an issue enabling and disabling temporary urls
+- Resolved an issue checking firewall status and removing firewall blocks
+- Resolved an issue when logins fail it would result in an internal server error
+
 ## 1.6.2 [Updated 11/12/2020]
 ### Fixed
 - Resolved issue logging into service in WHMCS admin area
