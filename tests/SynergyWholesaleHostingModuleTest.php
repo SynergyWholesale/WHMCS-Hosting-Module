@@ -30,10 +30,10 @@ class SynergyWholesaleHostingModuleTest extends TestCase
             ['AdminCustomButtonArray'],
             ['ConfigOptions'],
             ['MetaData'],
-            // Extra methods
+            ['ServiceSingleSignOn'],
             ['ClientArea'],
-            ['LoginLink'],
             ['ClientAreaCustomButtonArray'],
+            // Extra Methods
             ['UsageUpdate']
         ];
     }

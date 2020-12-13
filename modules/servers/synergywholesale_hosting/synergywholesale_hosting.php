@@ -173,26 +173,22 @@ function synergywholesale_hosting_ConfigOptions()
     ];
 
     foreach ($fields as $field) {
-        $fieldExists = DB::table('tblcustomfields')
-            ->where([
-                ['relid', $relid],
-                ['fieldname', $field['name']]
-            ])
-            ->count();
-        if (!$fieldExists) {
-            DB::table('tblcustomfields')
-            ->insert([
-                'relid' => $relid,
-                'type' => 'product',
-                'fieldname' => $field['name'],
-                'fieldtype' => $field['type'],
-                'fieldoptions' => '',
-                'adminonly' => $field['admin'],
-                'required' => $field['required'],
-                'showorder' => $field['showorder'],
-                'sortorder' => '0'
-            ]);
-        }
+        DB::table('tblcustomfields')
+            ->updateOrInsert(
+                [
+                    'relid' => $relid,
+                    'fieldname' => $field['name']
+                ],
+                [
+                    'type' => 'product',
+                    'fieldtype' => $field['type'],
+                    'fieldoptions' => '',
+                    'adminonly' => $field['admin'],
+                    'required' => $field['required'],
+                    'showorder' => $field['showorder'],
+                    'sortorder' => '0'
+                ]
+            );
     }
 
     return [
