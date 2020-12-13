@@ -36,7 +36,7 @@
  <div align="left">
     <table width="80%" cellspacing="1" cellpadding="0">
         <tr><td>
-            <form method="post" action="/clientarea.php?action=productdetails&id=30&modop=custom&a=tempurl">
+            <form method="post">
                 {if $tempUrl eq false}
                     <table width="100%" border="0" cellpadding="2" cellspacing="2">
                         <h5>Enabling Temporary URL will generate a URL that will remain active for 28 days.</h5>
@@ -50,7 +50,7 @@
                    </table>
                 {/if}
                </form>
-                <form method="post" action="/clientarea.php?action=productdetails&id=30&modop=custom&a=tempurl">
+                <form method="post">
                 {if $tempUrl eq true}
                 <h5>The URL below will give you temporary access to your web hosting service.</h5>
                     <table width="100%" border="0" cellpadding="2" cellspacing="2" class="table table-striped">
@@ -76,7 +76,7 @@
                         </tr>
                     </table>
                 </form>
-                    <form method="post" action="/clientarea.php?action=productdetails&id=30&modop=custom&a=tempurl">
+                    <form method="post">
                     <input type="hidden" name="id" value="{$serviceid}" />
                     <input type="hidden" name="modop" value="custom" />
                     <input type="hidden" name="a" value="tempurl" />

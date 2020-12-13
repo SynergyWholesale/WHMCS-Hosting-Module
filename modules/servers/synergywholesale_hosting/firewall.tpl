@@ -26,7 +26,7 @@
 <div><h3>Check Firewall</h3></div>
 
  <div align="left">
-    <form method="post" action="/clientarea.php?action=productdetails&id=30&modop=custom&a=firewall">
+    <form method="post">
         {if $blocked eq true}
             <div class="alert alert-danger alert-dismissable">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -47,7 +47,7 @@
               <strong>{$message}</strong>
             </div>
         {/if}          
-    <form method="post" action="/clientarea.php?action=productdetails&id=30&modop=custom&a=firewall">
+    <form method="post">
         <table width="65%" cellspacing="1" cellpadding="0">
              <tr><td>         
                 <table width="100%" style="margin-bottom: 7px;">

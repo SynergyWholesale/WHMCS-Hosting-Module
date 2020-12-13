@@ -667,7 +667,7 @@ function synergywholesale_hosting_client_login($params)
     $url = synergywholesale_hosting_get_login($params);
     if ($url) {
         header(sprintf('Location: %s', $url));
-        return 'success';
+        exit;
     } else {
         return 'Please contact support.';
     }
@@ -691,7 +691,7 @@ function synergywholesale_hosting_get_login($params)
     try {
         return synergywholesale_hosting_getLoginUrl($apiResult->username, $apiResult->password, $apiResult->server, $apiResult->product);
     } catch (\Exception $e) {
-        logModuleCall('Synergy Hosting', $action, $data, ['exception' => get_class($e), 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+        logModuleCall('Synergy Hosting', 'login', $data, ['exception' => get_class($e), 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
     }
     
     return false;
