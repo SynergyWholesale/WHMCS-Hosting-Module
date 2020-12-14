@@ -405,12 +405,19 @@ function synergywholesale_hosting_CreateAccount($params)
     $apiResult = synergywholesale_hosting_api($resellerId, $apiKey, 'hostingPurchaseService', $data);
     if (in_array($apiResult->status, ['OK', 'OK_PENDING'], true)) {
         $apiSyncResult = synergywholesale_hosting_api($resellerId, $apiKey, 'hostingGetService', [
-            'hoid' => $apiResult->hoid,
+            'identifier' => !empty($apiResult->hoid) ? $apiResult->hoid : $customValues['email'],
             'reason' => 'WHMCS',
             'api_method' => '1',
             'whmcs_ver' => $params['whmcsVersion']
         ]);
-        $fieldsToUpdate = [['field_id' => $customValues['ids']['Hosting Id'], 'value' => $apiResult->hoid]];
+
+        $fieldsToUpdate = [
+            [
+                'field_id' => $customValues['ids']['Hosting Id'],
+                'value' => !empty($apiResult->hoid) ? $apiResult->hoid : ''
+            ]
+        ];
+        
         if (isset($apiSyncResult->serverIPAddress)) {
             $fieldsToUpdate[] = [
                 'field_id' => $customValues['ids']['Server IP Address'],
