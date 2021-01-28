@@ -246,10 +246,22 @@ function synergywholesale_hosting_synchronize($params)
         $updateCustomField($params['serviceid'], $customValues['ids']['Server Hostname'], $apiResult->server);
         $updateCustomField($params['serviceid'], $customValues['ids']['Server IP Address'], $apiResult->serverIPAddress);
 
+        $hostingStatus = [
+            'Pending Completion' => 'Pending',
+            'Inactive' => 'Cancelled',
+            'Cancelled' => 'Cancelled',
+            'Active' => 'Active',
+            'Pending Cancellation' => 'Active',
+            'Pending Upgrade' => 'Active',
+            'Suspended' => 'Suspended',
+            'Suspended by Staff' => 'Suspended',
+            'Terminated' => 'Terminated',           
+        ];
+
         $updateData = [
             'username' => $apiResult->username,
             'domain' => $apiResult->domain,
-            'status' => $apiResult->status,
+            'status' => $hostingStatus[$apiResult->status],
             'dedicatedip' => $apiResult->dedicatedIPv4,
             'password' => encrypt($apiResult->password),
             'diskusage'   => $apiResult->disk_usage,
@@ -258,10 +270,6 @@ function synergywholesale_hosting_synchronize($params)
             'bwlimit'   => $apiResult->bw_limit,
             'lastupdate' => DB::raw('now()')
         ];
-
-        if (in_array(strtolower($apiResult->status), ['suspended', 'suspended by staff'])) {
-            $updateData['status'] = 'Suspended';
-        }
 
         foreach ($apiResult->nameServers as $index => $nameserver) {
             if ($index >= 3) {
