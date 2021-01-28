@@ -246,10 +246,10 @@ function synergywholesale_hosting_synchronize($params)
         $updateCustomField($params['serviceid'], $customValues['ids']['Server Hostname'], $apiResult->server);
         $updateCustomField($params['serviceid'], $customValues['ids']['Server IP Address'], $apiResult->serverIPAddress);
 
-
         $updateData = [
             'username' => $apiResult->username,
             'domain' => $apiResult->domain,
+            'status' => $apiResult->status,
             'dedicatedip' => $apiResult->dedicatedIPv4,
             'password' => encrypt($apiResult->password),
             'diskusage'   => $apiResult->disk_usage,
@@ -258,6 +258,10 @@ function synergywholesale_hosting_synchronize($params)
             'bwlimit'   => $apiResult->bw_limit,
             'lastupdate' => DB::raw('now()')
         ];
+
+        if (in_array(strtolower($apiResult->status), ['suspended', 'suspended by staff'])) {
+            $updateData['status'] = 'Suspended';
+        }
 
         foreach ($apiResult->nameServers as $index => $nameserver) {
             if ($index >= 3) {
@@ -272,7 +276,7 @@ function synergywholesale_hosting_synchronize($params)
 
             if (is_null($field_id)) {
                 synergywholesale_hosting_ConfigOptions($params['pid']);
-                $customValues = customValues($service_id);
+                $customValues = customValues($params['serviceid']);
                 if (!array_key_exists($fieldName, $customValues['ids'])) {
                     continue;
                 }
@@ -832,11 +836,11 @@ function synergywholesale_hosting_UsageUpdate($params, $page = 1)
             ])
             ->update([
                 'diskusage'   => $service->diskUsage,
-            'disklimit'  => $service->diskLimit,
-            'bwusage'    => $service->bandwidth,
-            'bwlimit'   => 0,
-            'lastupdate' => DB::raw('now()')
-        ]);
+                'disklimit'  => $service->diskLimit,
+                'bwusage'    => $service->bandwidth,
+                'bwlimit'   => 0,
+                'lastupdate' => DB::raw('now()')
+            ]);
 
         if ($i == $limit - 1) {
             return synergywholesale_hosting_UsageUpdate($params, $page + 1);
