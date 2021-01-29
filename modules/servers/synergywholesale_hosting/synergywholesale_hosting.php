@@ -261,7 +261,7 @@ function synergywholesale_hosting_synchronize($params)
         $updateData = [
             'username' => $apiResult->username,
             'domain' => $apiResult->domain,
-            'domainstatus' => $hostingStatus[$apiResult->status] ? $hostingStatus[$apiResult->status] : $params['status'],
+            'domainstatus' => isset($hostingStatus[$apiResult->status]) ? $hostingStatus[$apiResult->status] : $params['status'],
             'dedicatedip' => $apiResult->dedicatedIPv4,
             'password' => encrypt($apiResult->password),
             'diskusage'   => $apiResult->disk_usage,
