@@ -36,7 +36,6 @@ package:
 	make revert
 
 build:
-	make test
 	make replace
 	make package
 	make revert
