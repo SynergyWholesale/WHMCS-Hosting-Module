@@ -40,9 +40,9 @@
     </thead>
         <tr><td>
                 <table width="100%" border="0" cellpadding="2" cellspacing="2" class="table table-striped">
-                    <tr><td class="fieldarea">Webmail:</td><td class="sw-values">synergy.email</td></tr>
-                    <tr><td class="fieldarea">Incoming Mail Server:</td><td class="sw-values">synergy.email</td></tr>
-                    <tr><td class="fieldarea">Outgoing Mail Server:</td><td class="sw-values">synergy.email</td></tr>
+                    <tr><td class="fieldarea">Webmail:</td><td class="sw-values">ax.email</td></tr>
+                    <tr><td class="fieldarea">Incoming Mail Server:</td><td class="sw-values">ax.email</td></tr>
+                    <tr><td class="fieldarea">Outgoing Mail Server:</td><td class="sw-values">ax.email</td></tr>
                 </table>
             </td></tr>
     </table>
