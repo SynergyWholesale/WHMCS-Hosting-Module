@@ -145,30 +145,30 @@ function synergywholesale_hosting_ConfigOptions()
         [
             'name' => 'Email',
             'type' => 'text',
-            'admin' => '',
-            'required' => 'on',
-            'showorder' => 'on'
+            'admin' => 'off',
+            'required' => 'off',
+            'showorder' => 'off'
         ],
         [
             'name' => 'DKIM Public Key',
             'type' => 'text',
-            'admin' => 'on',
+            'admin' => 'off',
             'required' => 'off',
             'showorder' => 'off'
         ],
         [
             'name' => 'First Name',
             'type' => 'text',
-            'admin' => '',
+            'admin' => 'off',
             'required' => 'off',
-            'showorder' => 'on'
+            'showorder' => 'off'
         ],
         [
             'name' => 'Last Name',
             'type' => 'text',
-            'admin' => '',
+            'admin' => 'off',
             'required' => 'off',
-            'showorder' => 'on'
+            'showorder' => 'off'
         ],
     ];
 
@@ -312,9 +312,11 @@ function synergywholesale_hosting_synchronize($params)
         $updateCustomField($params['serviceid'], $customValues['ids']['First Name'], (isset($apiResult->firstName) ? $apiResult->firstName : ''));
         $updateCustomField($params['serviceid'], $customValues['ids']['Last Name'], (isset($apiResult->lastName) ? $apiResult->lastName : ''));
 
+        $customValues = customValues($params); // refresh customValues afterb update
+
         $updateData = [
             'username' => $apiResult->username,
-            'domain' => $apiResult->domain,
+            'domain' => ($customValues['product'] == 'Email Hosting') ? $email : $apiResult->domain,
             'dedicatedip' => $apiResult->dedicatedIPv4,
             'password' => encrypt($apiResult->password),
             'diskusage'   => $apiResult->disk_usage,
@@ -323,7 +325,7 @@ function synergywholesale_hosting_synchronize($params)
             'bwlimit'   => $apiResult->bw_limit,
             'lastupdate' => DB::raw('now()')
         ];
-
+        
         foreach ($apiResult->nameServers as $index => $nameserver) {
             if ($index >= 3) {
                 break;
@@ -384,16 +386,22 @@ function synergywholesale_hosting_CreateAccount($params)
             ]);
         }
     };
+
     if (strpos($location, 'Melbourne') !== false) {
         $customValues['locationName'] = 'MELBOURNE';
     } else {
         $customValues['locationName'] = 'SYDNEY';
     }
+
+    if (empty($domain) && !empty($customValues['email'])) {
+        $domain = explode('@', $customValues['email'], 2)[1];
+    }
+
     $data = [
         'planName' => $plan,
         'locationName' => $customValues['locationName'],
         'domain' => $domain,
-        'email' => $customValues['email'],
+        'email' => empty($customValues['email']) ? $params['clientsdetails']['email'] : $customValues['email'],
         'username' => $username,
         'password' => $password,
         'firstName' => $customValues['firstName'],
