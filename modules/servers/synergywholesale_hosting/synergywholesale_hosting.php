@@ -12,6 +12,9 @@ use WHMCS\Database\Capsule as DB;
 define('API_ENDPOINT', 'https://{{API}}');
 define('MODULE_VERSION', '{{VERSION}}');
 
+const SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER = 'Custom Hosting';
+const SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER = 'Email Hosting';
+
 function synergywholesale_hosting_renameModule($names_map)
 {
     foreach ($names_map as $old => $new) {
@@ -254,7 +257,7 @@ function customValues($params)
         'server_ip' => $values[$ids['Server IP Address']],
         'server_hostname' => $values[$ids['Server Hostname']],
         'email' => $values[$ids['Email']],
-        'product' => $values[$ids['Product']],
+        'product' => !empty($values[$ids['Product']]) ? $values[$ids['Product']] : SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER,
         'dkim' => $values[$ids['DKIM Public Key']],
         'firstName' => $values[$ids['First Name']],
         'lastName' => $values[$ids['Last Name']],
@@ -316,7 +319,7 @@ function synergywholesale_hosting_synchronize($params)
 
         $updateData = [
             'username' => $apiResult->username,
-            'domain' => ($customValues['product'] == 'Email Hosting') ? $email : $apiResult->domain,
+            'domain' => ($customValues['product'] == SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER) ? $email : $apiResult->domain,
             'dedicatedip' => $apiResult->dedicatedIPv4,
             'password' => encrypt($apiResult->password),
             'diskusage'   => $apiResult->disk_usage,
@@ -708,10 +711,10 @@ function synergywholesale_hosting_get_login($params)
     return false;
 }
 
-function synergywholesale_hosting_getLoginUrl($user, $pass, $hostname, $product = 'Custom Hosting', $service = 'cpanel', $goto = '/') 
+function synergywholesale_hosting_getLoginUrl($user, $pass, $hostname, $product = SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER, $service = 'cpanel', $goto = '/') 
 {
     switch ($product) {
-        case 'Custom Hosting':
+        case SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER:
             $servicePorts = [
                 'cpanel' => 2083,
                 'whm' => 2087,
@@ -757,7 +760,7 @@ function synergywholesale_hosting_getLoginUrl($user, $pass, $hostname, $product 
                 $session[1],
                 $goto == '/' ? '' : '&goto_uri=' . urlencode($goto)
             );
-        case 'Email Hosting':
+        case SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER:
             $baseUrl = 'https://' . $hostname;
             $defaultQuery = http_build_query([
                 'action' => 'login',
@@ -776,16 +779,16 @@ function synergywholesale_hosting_ClientAreaCustomButtonArray($params)
     $product = $customValues['product'];
 
     switch ($product) {
-        case 'Custom Hosting':
+        case SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER:
             return [
-                'Login' => 'client_login',
+                'Login to cPanel' => 'client_login',
                 'Manage Temporary URL' => 'tempurl',
                 'Check Firewall' => 'firewall',
             ];
 
-        case 'Email Hosting':
+        case SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER:
             return [
-                'Login' => 'client_login',
+                'Login to Webmail' => 'client_login',
             ];
     }
 }
