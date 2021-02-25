@@ -14,6 +14,10 @@ Synergy Wholesale WHMCS Hosting Module
 
 ### Removed
 
+## 1.6.4 [Updated 25/02/2021]
+### Added
+- Added support for Email Hosting products
+
 ## 1.6.3 [Updated 12/12/2020]
 ### Fixed
 - Resolved an issue logging into services in the WHMCS client area when using certain themes or server configurations
