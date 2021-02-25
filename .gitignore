@@ -3,6 +3,7 @@
 *.sublime-workspace
 .phpintel/*
 .idea/
+.vscode
 
 # Mac
 .DS_Store
