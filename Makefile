@@ -30,7 +30,7 @@ revert:
 package:
 	make replace
 	zip -r "synergy-wholesale-hosting-$(VERSION).zip" . -x  \
-	'.DS_Store' '**/.DS_Store' '*.cache' '.git*' '*.md' 'Makefile' 'package.json' 'package-lock.json' \
+	'.DS_Store' '**/.DS_Store' '*.cache' '.git*' 'CONTRIBUTING.md' 'README.md' 'Makefile' 'package.json' 'package-lock.json' \
 	'composer.json' 'composer.lock' '*.xml' '**/functions.js' \
 	'vendor/*' 'node_modules/*' '.git/*' 'tests/*'
 	make revert

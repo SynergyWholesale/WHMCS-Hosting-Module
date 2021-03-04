@@ -16,7 +16,9 @@ Synergy Wholesale WHMCS Hosting Module
 
 ## 1.6.6 [Updated 4/03/2021]
 ### Added
-- Upgrade guide for upgrading to new email hosting product version
+- UPGRADING.md file for upgrade instructions between module versions
+  - Pease ensure that this file is always read between version upgrades
+  - In this current version we recommend that every access their "Module Settings" tab in their Synergy Wholesale Hosting products configuration.
 ### Fixed
 - Syncing services will no longer attempt to update custom fields that don't exist
 

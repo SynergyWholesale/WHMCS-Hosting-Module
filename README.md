@@ -10,6 +10,8 @@ This repository contains the source code for the [Synergy Wholesale](https://syn
 ---
 The [following guide](https://synergywholesale.com/faq/article/installing-the-whmcs-hosting-module/) will assist you in installation and configuration of the Synergy Wholesale WHMCS Hosting module into your WHMCS installation
 
+When upgrading between extension versions please consult the UPGRADING.md file
+
 ## Minimum Requirements
 ---
 This module supports the [minimum WHMCS system requirements](https://docs.whmcs.com/System_Requirements). This module may work with [EOL versions of WHMCS](https://docs.whmcs.com/Long_Term_Support#WHMCS_Version_.26_LTS_Schedule) including those < 7.0, however no support will be offered for such versions.
