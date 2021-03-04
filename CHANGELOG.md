@@ -14,6 +14,16 @@ Synergy Wholesale WHMCS Hosting Module
 
 ### Removed
 
+## 1.6.6 [Updated 4/03/2021]
+### Added
+- Upgrade guide for upgrading to new email hosting product version
+### Fixed
+- Syncing services will no longer attempt to update custom fields that don't exist
+
+## 1.6.5 [Updated 26/02/2021]
+### Fixed
+- Make Custom Hosting products the default when no product name is found
+
 ## 1.6.4 [Updated 25/02/2021]
 ### Added
 - Added support for Email Hosting products

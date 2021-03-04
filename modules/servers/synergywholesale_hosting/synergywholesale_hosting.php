@@ -279,11 +279,16 @@ function synergywholesale_hosting_synchronize($params)
     $email = $customValues['email'];
 
     $updateCustomField = function ($service_id, $field_id, $value) {
+        // If the Field ID is invalid, don't update the custom field
+        if (!$field_id) {
+            return;
+        }
 
         $serviceCustomField = DB::table('tblcustomfieldsvalues')
             ->where('fieldid', $field_id)
             ->where('relid', $service_id)
             ->first();
+
         if ($serviceCustomField) {
             return DB::table('tblcustomfieldsvalues')
                 ->where('fieldid', $field_id)
@@ -315,7 +320,7 @@ function synergywholesale_hosting_synchronize($params)
         $updateCustomField($params['serviceid'], $customValues['ids']['First Name'], (isset($apiResult->firstName) ? $apiResult->firstName : ''));
         $updateCustomField($params['serviceid'], $customValues['ids']['Last Name'], (isset($apiResult->lastName) ? $apiResult->lastName : ''));
 
-        $customValues = customValues($params); // refresh customValues afterb update
+        $customValues = customValues($params); // refresh customValues after update
 
         $updateData = [
             'username' => $apiResult->username,
