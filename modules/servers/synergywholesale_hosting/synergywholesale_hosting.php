@@ -376,7 +376,13 @@ function synergywholesale_hosting_CreateAccount($params)
     $plan = $params['configoption3'];
     $location = $params['configoption4'];
     $customValues = customValues($params);
+
     $updateCustomField = function ($service_id, $field_id, $value) {
+        // If the Field ID is invalid, don't update the custom field
+        if (!$field_id) {
+            return;
+        }
+
         $serviceCustomField = DB::table('tblcustomfieldsvalues')
             ->where('fieldid', $field_id)
             ->where('relid', $service_id)
