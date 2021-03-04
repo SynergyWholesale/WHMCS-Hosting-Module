@@ -18,7 +18,7 @@ Synergy Wholesale WHMCS Hosting Module
 ### Added
 - UPGRADING.md file for upgrade instructions between module versions
   - Pease ensure that this file is always read between version upgrades
-  - In this current version we recommend that every access their "Module Settings" tab in their Synergy Wholesale Hosting products configuration.
+  - In this current version we recommend that everyone accesses the "Module Settings" tab in their Synergy Wholesale Hosting products configuration.
 ### Fixed
 - Syncing services will no longer attempt to update custom fields that don't exist
 
