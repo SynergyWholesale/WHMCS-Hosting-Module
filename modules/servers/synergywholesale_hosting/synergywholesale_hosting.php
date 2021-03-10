@@ -12,6 +12,9 @@ use WHMCS\Database\Capsule as DB;
 define('API_ENDPOINT', 'https://{{API}}');
 define('MODULE_VERSION', '{{VERSION}}');
 
+const SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER = 'Custom Hosting';
+const SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER = 'Email Hosting';
+
 function synergywholesale_hosting_renameModule($names_map)
 {
     foreach ($names_map as $old => $new) {
@@ -94,45 +97,101 @@ function synergywholesale_hosting_ConfigOptions()
 
     $fields = [
         [
+            'name' => 'Product',
+            'type' => 'text',
+            'admin' => 'on',
+            'required' => 'off',
+            'showorder' => 'off'
+        ],
+        [
             'name' => 'Hosting Id',
-            'type' => 'text'
-        ], [
+            'type' => 'text',
+            'admin' => 'on',
+            'required' => 'off',
+            'showorder' => 'off'
+        ],
+        [
             'name' => 'Server Hostname',
-            'type' => 'text'
-        ], [
+            'type' => 'text',
+            'admin' => 'on',
+            'required' => 'off',
+            'showorder' => 'off'
+        ],
+        [
             'name' => 'Server IP Address',
-            'type' => 'text'
-        ], [
+            'type' => 'text',
+            'admin' => 'on',
+            'required' => 'off',
+            'showorder' => 'off'
+        ],
+        [
             'name' => 'Nameserver 1',
-            'type' => 'text'
-        ], [
+            'type' => 'text',
+            'admin' => 'on',
+            'required' => 'off',
+            'showorder' => 'off'
+        ],
+        [
             'name' => 'Nameserver 2',
-            'type' => 'text'
-        ], [
+            'type' => 'text',
+            'admin' => 'on',
+            'required' => 'off',
+            'showorder' => 'off'
+        ],
+        [
             'name' => 'Nameserver 3',
-            'type' => 'text'
-        ]
+            'type' => 'text',
+            'admin' => 'on',
+            'required' => 'off',
+            'showorder' => 'off'
+        ],
+        [
+            'name' => 'Email',
+            'type' => 'text',
+            'admin' => 'off',
+            'required' => 'off',
+            'showorder' => 'off'
+        ],
+        [
+            'name' => 'DKIM Public Key',
+            'type' => 'text',
+            'admin' => 'off',
+            'required' => 'off',
+            'showorder' => 'off'
+        ],
+        [
+            'name' => 'First Name',
+            'type' => 'text',
+            'admin' => 'off',
+            'required' => 'off',
+            'showorder' => 'off'
+        ],
+        [
+            'name' => 'Last Name',
+            'type' => 'text',
+            'admin' => 'off',
+            'required' => 'off',
+            'showorder' => 'off'
+        ],
     ];
 
     foreach ($fields as $field) {
-        $fieldExists = DB::table('tblcustomfields')
-            ->where([
-                ['relid', $relid],
-                ['fieldname', $field['name']]
-            ])
-            ->count();
-        if (!$fieldExists) {
-            DB::table('tblcustomfields')
-            ->insert([
-                'relid' => $relid,
-                'type' => 'product',
-                'fieldname' => $field['name'],
-                'fieldtype' => $field['type'],
-                'fieldoptions' => '',
-                'adminonly' => 'on',
-                'sortorder' => '0'
-            ]);
-        }
+        DB::table('tblcustomfields')
+            ->updateOrInsert(
+                [
+                    'relid' => $relid,
+                    'fieldname' => $field['name']
+                ],
+                [
+                    'type' => 'product',
+                    'fieldtype' => $field['type'],
+                    'fieldoptions' => '',
+                    'adminonly' => $field['admin'],
+                    'required' => $field['required'],
+                    'showorder' => $field['showorder'],
+                    'sortorder' => '0'
+                ]
+            );
     }
 
     return [
@@ -197,6 +256,11 @@ function customValues($params)
         'hoid' => $values[$ids['Hosting Id']],
         'server_ip' => $values[$ids['Server IP Address']],
         'server_hostname' => $values[$ids['Server Hostname']],
+        'email' => $values[$ids['Email']],
+        'product' => !empty($values[$ids['Product']]) ? $values[$ids['Product']] : SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER,
+        'dkim' => $values[$ids['DKIM Public Key']],
+        'firstName' => $values[$ids['First Name']],
+        'lastName' => $values[$ids['Last Name']],
         'ids' => $ids,
         'nameservers' => [
             $values[$ids['Nameserver 1']],
@@ -212,13 +276,19 @@ function synergywholesale_hosting_synchronize($params)
     $apiKey = $params['configoption1'];
     $customValues = customValues($params);
     $hoid = $customValues['hoid'];
+    $email = $customValues['email'];
 
     $updateCustomField = function ($service_id, $field_id, $value) {
+        // If the Field ID is invalid, don't update the custom field
+        if (!$field_id) {
+            return;
+        }
 
         $serviceCustomField = DB::table('tblcustomfieldsvalues')
             ->where('fieldid', $field_id)
             ->where('relid', $service_id)
             ->first();
+
         if ($serviceCustomField) {
             return DB::table('tblcustomfieldsvalues')
                 ->where('fieldid', $field_id)
@@ -234,7 +304,7 @@ function synergywholesale_hosting_synchronize($params)
     };
 
     $data = [
-        'hoid' => $hoid,
+        'identifier' => (!empty($hoid) ? $hoid : $email),
         'reason' => 'WHMCS',
         'api_method' => '1',
         'whmcs_ver' => $params['whmcsVersion'],
@@ -245,6 +315,10 @@ function synergywholesale_hosting_synchronize($params)
     if ($apiResult->errorMessage == 'Hosting Get Service Completed Successfully') {
         $updateCustomField($params['serviceid'], $customValues['ids']['Server Hostname'], $apiResult->server);
         $updateCustomField($params['serviceid'], $customValues['ids']['Server IP Address'], $apiResult->serverIPAddress);
+        $updateCustomField($params['serviceid'], $customValues['ids']['Product'], $apiResult->product);
+        $updateCustomField($params['serviceid'], $customValues['ids']['DKIM Public Key'], (isset($apiResult->dkim) ? $apiResult->dkim : ''));
+        $updateCustomField($params['serviceid'], $customValues['ids']['First Name'], (isset($apiResult->firstName) ? $apiResult->firstName : ''));
+        $updateCustomField($params['serviceid'], $customValues['ids']['Last Name'], (isset($apiResult->lastName) ? $apiResult->lastName : ''));
 
         $hostingStatus = [
             'Pending Completion' => 'Pending',
@@ -257,11 +331,12 @@ function synergywholesale_hosting_synchronize($params)
             'Suspended by Staff' => 'Suspended',
             'Terminated' => 'Terminated',           
         ];
+        
+        $customValues = customValues($params); // refresh customValues after update
 
         $updateData = [
             'username' => $apiResult->username,
-            'domain' => $apiResult->domain,
-            'domainstatus' => isset($hostingStatus[$apiResult->status]) ? $hostingStatus[$apiResult->status] : $params['status'],
+            'domain' => ($customValues['product'] == SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER) ? $email : $apiResult->domain,
             'dedicatedip' => $apiResult->dedicatedIPv4,
             'password' => encrypt($apiResult->password),
             'diskusage'   => $apiResult->disk_usage,
@@ -270,7 +345,7 @@ function synergywholesale_hosting_synchronize($params)
             'bwlimit'   => $apiResult->bw_limit,
             'lastupdate' => DB::raw('now()')
         ];
-
+        
         foreach ($apiResult->nameServers as $index => $nameserver) {
             if ($index >= 3) {
                 break;
@@ -306,7 +381,6 @@ function synergywholesale_hosting_synchronize($params)
 function synergywholesale_hosting_CreateAccount($params)
 {
     $domain = $params['domain'];
-    $email = $params['clientsdetails']['email'];
     $username = $params['username'];
     $password = $params['password'];
     $resellerId = $params['configoption2'];
@@ -314,7 +388,13 @@ function synergywholesale_hosting_CreateAccount($params)
     $plan = $params['configoption3'];
     $location = $params['configoption4'];
     $customValues = customValues($params);
+
     $updateCustomField = function ($service_id, $field_id, $value) {
+        // If the Field ID is invalid, don't update the custom field
+        if (!$field_id) {
+            return;
+        }
+
         $serviceCustomField = DB::table('tblcustomfieldsvalues')
             ->where('fieldid', $field_id)
             ->where('relid', $service_id)
@@ -332,18 +412,26 @@ function synergywholesale_hosting_CreateAccount($params)
             ]);
         }
     };
+
     if (strpos($location, 'Melbourne') !== false) {
         $customValues['locationName'] = 'MELBOURNE';
     } else {
         $customValues['locationName'] = 'SYDNEY';
     }
+
+    if (empty($domain) && !empty($customValues['email'])) {
+        $domain = explode('@', $customValues['email'], 2)[1];
+    }
+
     $data = [
         'planName' => $plan,
         'locationName' => $customValues['locationName'],
         'domain' => $domain,
-        'email' => $email,
+        'email' => empty($customValues['email']) ? $params['clientsdetails']['email'] : $customValues['email'],
         'username' => $username,
         'password' => $password,
+        'firstName' => $customValues['firstName'],
+        'lastName' => $customValues['lastName'],
         'api_method' => 'WHMCS',
         'whmcs_ver' => $params['whmcsVersion'],
         'whmcs_mod_ver' => $params['configoption5']
@@ -351,12 +439,19 @@ function synergywholesale_hosting_CreateAccount($params)
     $apiResult = synergywholesale_hosting_api($resellerId, $apiKey, 'hostingPurchaseService', $data);
     if (in_array($apiResult->status, ['OK', 'OK_PENDING'], true)) {
         $apiSyncResult = synergywholesale_hosting_api($resellerId, $apiKey, 'hostingGetService', [
-            'hoid' => $apiResult->hoid,
+            'identifier' => !empty($apiResult->hoid) ? $apiResult->hoid : $customValues['email'],
             'reason' => 'WHMCS',
             'api_method' => '1',
             'whmcs_ver' => $params['whmcsVersion']
         ]);
-        $fieldsToUpdate = [['field_id' => $customValues['ids']['Hosting Id'], 'value' => $apiResult->hoid]];
+
+        $fieldsToUpdate = [
+            [
+                'field_id' => $customValues['ids']['Hosting Id'],
+                'value' => !empty($apiResult->hoid) ? $apiResult->hoid : ''
+            ]
+        ];
+        
         if (isset($apiSyncResult->serverIPAddress)) {
             $fieldsToUpdate[] = [
                 'field_id' => $customValues['ids']['Server IP Address'],
@@ -415,8 +510,9 @@ function synergywholesale_hosting_TerminateAccount($params)
     $apiKey = $params['configoption1'];
     $customValues = customValues($params);
     $hoid = $customValues['hoid'];
+    $email = $customValues['email'];
     $data = [
-        'hoid' => $hoid,
+        'identifier' => (!empty($hoid) ? $hoid : $email),
         'reason' => 'WHMCS',
         'api_method' => '1',
         'whmcs_ver' => $params['whmcsVersion'],
@@ -432,8 +528,9 @@ function synergywholesale_hosting_SuspendAccount($params)
     $apiKey = $params['configoption1'];
     $customValues = customValues($params);
     $hoid = $customValues['hoid'];
+    $email = $customValues['email'];
     $data = [
-        'hoid' => $hoid,
+        'identifier' => (!empty($hoid) ? $hoid : $email),
         'reason' => 'WHMCS',
         'api_method' => '1',
         'whmcs_ver' => $params['whmcsVersion'],
@@ -449,8 +546,9 @@ function synergywholesale_hosting_UnsuspendAccount($params)
     $apiKey = $params['configoption1'];
     $customValues = customValues($params);
     $hoid = $customValues['hoid'];
+    $email = $customValues['email'];
     $data = [
-        'hoid' => $hoid,
+        'identifier' => (!empty($hoid) ? $hoid : $email),
         'api_method' => '1',
         'whmcs_ver' => $params['whmcsVersion'],
         'whmcs_mod_ver' => $params['configoption5']
@@ -466,8 +564,9 @@ function synergywholesale_hosting_ChangePassword($params)
     $apiKey = $params['configoption1'];
     $customValues = customValues($params);
     $hoid = $customValues['hoid'];
+    $email = $customValues['email'];
     $data = [
-        'hoid' => $hoid,
+        'identifier' => (!empty($hoid) ? $hoid : $email),
         'newPassword' => $password,
         'api_method' => '1',
         'whmcs_ver' => $params['whmcsVersion'],
@@ -519,10 +618,12 @@ function synergywholesale_hosting_ChangePackage($params)
     } else {
         $customValues['locationName'] = 'SYDNEY';
     }
+    $hoid = $customValues['hoid'];
+    $email = $customValues['email'];
     $data = [
         'newPlanName' => $plan,
         'newLocationName' => $customValues['locationName'],
-        'hoid' => $customValues['hoid'],
+        'identifier' => (!empty($hoid) ? $hoid : $email),
         'api_method' => '1',
         'whmcs_ver' => $params['whmcsVersion'],
         'whmcs_mod_ver' => $params['configoption5']
@@ -549,8 +650,9 @@ function synergywholesale_hosting_ClientArea($params)
     $apiKey = $params['templatevars']['moduleParams']['configoption1'];
     $customValues = customValues($params);
     $hoid = $customValues['hoid'];
+    $email = $customValues['email'];
     $data = [
-        'hoid' => $hoid,
+        'identifier' => (!empty($hoid) ? $hoid : $email),
         'reason' => 'WHMCS',
         'api_method' => '1',
         'whmcs_ver' => $params['whmcsVersion'],
@@ -566,19 +668,23 @@ function synergywholesale_hosting_ClientArea($params)
     return [
         'templatefile' => 'clientarea',
         'vars' => [
+            'product' => $apiResult->product,
+            'domain' => $apiResult->domain,
             'plan' => $apiResult->plan,
             'status' => $apiResult->status,
             'server' => $apiResult->server,
             'dedicatedIP' => $apiResult->dedicatedIPv4,
             'serverIP' => $apiResult->serverIPAddress,
-            'serverHostname' => $apiResult->server
+            'serverHostname' => $apiResult->server,
+            'dkim' => (isset($apiResult->dkim) ? $apiResult->dkim : ''),
+            'mxrecords' => (isset($apiResult->mxrecords) ? json_decode($apiResult->mxrecords) : '')
         ],
     ];
 }
 
 function synergywholesale_hosting_ServiceSingleSignOn(array $params)
 {
-    $url = synergywholesale_hosting_cpanel_login($params);
+    $url = synergywholesale_hosting_get_login($params);
 
     if (! $url) {
         return [
@@ -593,21 +699,9 @@ function synergywholesale_hosting_ServiceSingleSignOn(array $params)
     ];
 }
 
-function synergywholesale_hosting_LoginLink($params)
+function synergywholesale_hosting_client_login($params)
 {
-    $url = synergywholesale_hosting_cpanel_login($params);
-    return sprintf('<a href="%s"/>', $url);
-}
-
-function synergywholesale_hosting_cpanel_admin($params)
-{
-    $url = synergywholesale_hosting_cpanel_login($params);
-    return ($url ? 'window|' . $url : 'Please contact support.');
-}
-
-function synergywholesale_hosting_cpanel_client_login($params)
-{
-    $url = synergywholesale_hosting_cpanel_login($params);
+    $url = synergywholesale_hosting_get_login($params);
     if ($url) {
         header(sprintf('Location: %s', $url));
         exit;
@@ -616,21 +710,23 @@ function synergywholesale_hosting_cpanel_client_login($params)
     }
 }
 
-function synergywholesale_hosting_cpanel_login($params)
+function synergywholesale_hosting_get_login($params)
 {
     $resellerId = $params['configoption2'];
     $apiKey = $params['configoption1'];
     $customValues = customValues($params);
+    $hoid = $customValues['hoid'];
+    $email = $customValues['email'];
     $data = [
-        'hoid' => $customValues['hoid'],
+        'identifier' => (!empty($hoid) ? $hoid : $email),
         'reason' => 'WHMCS',
         'api_method' => '1',
         'whmcs_ver' => $params['whmcsVersion'],
-        'whmcs_mod_ver' => $params['templatevars']['moduleParams']['configoption5']
+        'whmcs_mod_ver' => $params['configoption5']
     ];
     $apiResult = synergywholesale_hosting_api($resellerId, $apiKey, 'hostingGetService', $data);
     try {
-        return synergywholesale_hosting_getLoginUrl($apiResult->username, $apiResult->password, $apiResult->server);
+        return synergywholesale_hosting_getLoginUrl($apiResult->username, $apiResult->password, $apiResult->server, $apiResult->product);
     } catch (\Exception $e) {
         logModuleCall('Synergy Hosting', 'login', $data, ['exception' => get_class($e), 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
     }
@@ -638,57 +734,89 @@ function synergywholesale_hosting_cpanel_login($params)
     return false;
 }
 
-function synergywholesale_hosting_getLoginUrl($user, $pass, $hostname, $service = 'cpanel', $goto = '/')
+function synergywholesale_hosting_getLoginUrl($user, $pass, $hostname, $product = SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER, $service = 'cpanel', $goto = '/') 
 {
-    $servicePorts = [
-        'cpanel' => 2083,
-        'whm' => 2087,
-        'webmail' => 2096
-    ];
-    $port = isset($servicePorts[$service]) ? $servicePorts[$service] : $servicePorts['cpanel'];
-    $postFields = [
-        'user' => $user,
-        'pass' => $pass,
-        'goto_uri' => $goto
-    ];
-    $url = 'https://' . $hostname . ':' . $port;
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url . '/login');
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postFields));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Connection' => 'close']);
-    curl_setopt($ch, CURLOPT_HEADER, true);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-    $page = curl_exec($ch);
-    curl_close($ch);
-    $session = $token = [];
-    if (!preg_match('/session=([^\;]+)/', $page, $session)) {
-        return false;
+    switch ($product) {
+        case SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER:
+            $servicePorts = [
+                'cpanel' => 2083,
+                'whm' => 2087,
+                'webmail' => 2096
+            ];
+            $port = isset($servicePorts[$service]) ? $servicePorts[$service] : $servicePorts['cpanel'];
+            $postFields = [
+                'user' => $user,
+                'pass' => $pass,
+                'goto_uri' => $goto
+            ];
+            $url = 'https://' . $hostname . ':' . $port;
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url . '/login');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postFields));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Connection' => 'close']);
+            curl_setopt($ch, CURLOPT_HEADER, true);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+            $page = curl_exec($ch);
+            if (curl_errno($ch)) {
+                $error_msg = curl_error($ch);
+            }
+
+            if (isset($error_msg)) {
+                return $error_msg;
+            }
+
+            curl_close($ch);
+            $session = $token = [];
+            if (!preg_match('/session=([^\;]+)/', $page, $session)) {
+                return false;
+            }
+            if (!preg_match('|<META HTTP-EQUIV="refresh"[^>]+URL=/(cpsess\d+)/|i', $page, $token)) {
+                return false;
+            }
+
+            return sprintf(
+                '%s/%s/login/?session=%s',
+                $url,
+                $token[1],
+                $session[1],
+                $goto == '/' ? '' : '&goto_uri=' . urlencode($goto)
+            );
+        case SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER:
+            $baseUrl = 'https://' . $hostname;
+            $defaultQuery = http_build_query([
+                'action' => 'login',
+                'username' => $user,
+                'password' => $pass,
+                'custom' => 'ajaxdirect'
+            ]);
+
+            return "{$baseUrl}/?{$defaultQuery}";
     }
-    if (!preg_match('|<META HTTP-EQUIV="refresh"[^>]+URL=/(cpsess\d+)/|i', $page, $token)) {
-        return false;
-    }
-    
-    return sprintf(
-        '%s/%s/login/?session=%s',
-        $url,
-        $token[1],
-        $session[1],
-        $goto == '/' ? '' : '&goto_uri=' . urlencode($goto)
-    );
 }
 
-function synergywholesale_hosting_ClientAreaCustomButtonArray()
+function synergywholesale_hosting_ClientAreaCustomButtonArray($params)
 {
-    return [
-        'Login to cPanel' => 'cpanel_client_login',
-        'Manage Temporary URL' => 'tempurl',
-        'Check Firewall' => 'firewall'
-    ];
+    $customValues = customValues($params);
+    $product = $customValues['product'];
+
+    switch ($product) {
+        case SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER:
+            return [
+                'Login to cPanel' => 'client_login',
+                'Manage Temporary URL' => 'tempurl',
+                'Check Firewall' => 'firewall',
+            ];
+
+        case SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER:
+            return [
+                'Login to Webmail' => 'client_login',
+            ];
+    }
 }
 
-function synergywholesale_hosting_TempUrl($params)
+function synergywholesale_hosting_tempurl($params)
 {
     $resellerId = $params['configoption2'];
     $apiKey = $params['configoption1'];
