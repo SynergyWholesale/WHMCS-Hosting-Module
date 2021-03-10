@@ -329,7 +329,7 @@ function synergywholesale_hosting_synchronize($params)
             'Pending Upgrade' => 'Active',
             'Suspended' => 'Suspended',
             'Suspended by Staff' => 'Suspended',
-            'Terminated' => 'Terminated',           
+            'Terminated' => 'Terminated',
         ];
         
         $customValues = customValues($params); // refresh customValues after update
@@ -337,6 +337,7 @@ function synergywholesale_hosting_synchronize($params)
         $updateData = [
             'username' => $apiResult->username,
             'domain' => ($customValues['product'] == SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER) ? $email : $apiResult->domain,
+            'domainstatus' => isset($hostingStatus[$apiResult->status]) ? $hostingStatus[$apiResult->status] : $params['status'],
             'dedicatedip' => $apiResult->dedicatedIPv4,
             'password' => encrypt($apiResult->password),
             'diskusage'   => $apiResult->disk_usage,
@@ -734,7 +735,7 @@ function synergywholesale_hosting_get_login($params)
     return false;
 }
 
-function synergywholesale_hosting_getLoginUrl($user, $pass, $hostname, $product = SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER, $service = 'cpanel', $goto = '/') 
+function synergywholesale_hosting_getLoginUrl($user, $pass, $hostname, $product = SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER, $service = 'cpanel', $goto = '/')
 {
     switch ($product) {
         case SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER:
