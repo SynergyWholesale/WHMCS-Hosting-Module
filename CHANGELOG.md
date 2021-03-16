@@ -14,6 +14,10 @@ Synergy Wholesale WHMCS Hosting Module
 
 ### Removed
 
+## 1.6.7 [Updated 10/03/2021]
+### Fixed
+- Added support for service status to synchronise function
+
 ## 1.6.6 [Updated 4/03/2021]
 ### Added
 - UPGRADING.md file for upgrade instructions between module versions

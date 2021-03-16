@@ -320,11 +320,24 @@ function synergywholesale_hosting_synchronize($params)
         $updateCustomField($params['serviceid'], $customValues['ids']['First Name'], (isset($apiResult->firstName) ? $apiResult->firstName : ''));
         $updateCustomField($params['serviceid'], $customValues['ids']['Last Name'], (isset($apiResult->lastName) ? $apiResult->lastName : ''));
 
+        $hostingStatus = [
+            'Pending Completion' => 'Pending',
+            'Inactive' => 'Cancelled',
+            'Cancelled' => 'Cancelled',
+            'Active' => 'Active',
+            'Pending Cancellation' => 'Active',
+            'Pending Upgrade' => 'Active',
+            'Suspended' => 'Suspended',
+            'Suspended by Staff' => 'Suspended',
+            'Terminated' => 'Terminated',
+        ];
+        
         $customValues = customValues($params); // refresh customValues after update
 
         $updateData = [
             'username' => $apiResult->username,
             'domain' => ($customValues['product'] == SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER) ? $email : $apiResult->domain,
+            'domainstatus' => isset($hostingStatus[$apiResult->status]) ? $hostingStatus[$apiResult->status] : $params['status'],
             'dedicatedip' => $apiResult->dedicatedIPv4,
             'password' => encrypt($apiResult->password),
             'diskusage'   => $apiResult->disk_usage,
@@ -347,7 +360,7 @@ function synergywholesale_hosting_synchronize($params)
 
             if (is_null($field_id)) {
                 synergywholesale_hosting_ConfigOptions($params['pid']);
-                $customValues = customValues($service_id);
+                $customValues = customValues($params['serviceid']);
                 if (!array_key_exists($fieldName, $customValues['ids'])) {
                     continue;
                 }
@@ -722,7 +735,7 @@ function synergywholesale_hosting_get_login($params)
     return false;
 }
 
-function synergywholesale_hosting_getLoginUrl($user, $pass, $hostname, $product = SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER, $service = 'cpanel', $goto = '/') 
+function synergywholesale_hosting_getLoginUrl($user, $pass, $hostname, $product = SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER, $service = 'cpanel', $goto = '/')
 {
     switch ($product) {
         case SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER:
@@ -960,11 +973,11 @@ function synergywholesale_hosting_UsageUpdate($params, $page = 1)
             ])
             ->update([
                 'diskusage'   => $service->diskUsage,
-            'disklimit'  => $service->diskLimit,
-            'bwusage'    => $service->bandwidth,
-            'bwlimit'   => 0,
-            'lastupdate' => DB::raw('now()')
-        ]);
+                'disklimit'  => $service->diskLimit,
+                'bwusage'    => $service->bandwidth,
+                'bwlimit'   => 0,
+                'lastupdate' => DB::raw('now()')
+            ]);
 
         if ($i == $limit - 1) {
             return synergywholesale_hosting_UsageUpdate($params, $page + 1);
