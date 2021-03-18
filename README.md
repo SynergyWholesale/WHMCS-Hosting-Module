@@ -6,6 +6,10 @@
 
 This repository contains the source code for the [Synergy Wholesale](https://synergywholesale.com/) WHMCS hosting module.
 
+## Reporting Issues/Requesting Features
+---
+If you would like to report a bug or request a new feature/improvement for our module, please have a read [our guide here](https://synergywholesale.com/faq/category/api-whmcs-modules/bug-reporting-feature-requesting/) and submit a support request to our technical support team!
+
 # Installation
 ---
 The [following guide](https://synergywholesale.com/faq/article/installing-the-whmcs-hosting-module/) will assist you in installation and configuration of the Synergy Wholesale WHMCS Hosting module into your WHMCS installation
