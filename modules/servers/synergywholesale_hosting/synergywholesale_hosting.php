@@ -340,7 +340,7 @@ function synergywholesale_hosting_synchronize($params)
             'domainstatus' => isset($hostingStatus[$apiResult->status]) ? $hostingStatus[$apiResult->status] : $params['status'],
             'dedicatedip' => $apiResult->dedicatedIPv4,
             'password' => encrypt($apiResult->password),
-            'diskusage'   => $apiResult->disk_usage,
+            'diskusage'   => ($customValues['product'] == SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER) ? $apiResult->mailboxUsage : $apiResult->disk_usage,
             'disklimit'  => $apiResult->disk_limit,
             'bwusage'    => $apiResult->bw_usage,
             'bwlimit'   => $apiResult->bw_limit,
