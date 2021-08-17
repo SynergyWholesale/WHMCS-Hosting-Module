@@ -341,9 +341,9 @@ function synergywholesale_hosting_synchronize($params)
             'dedicatedip' => $apiResult->dedicatedIPv4,
             'password' => encrypt($apiResult->password),
             'diskusage'   => ($customValues['product'] == SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER) ? $apiResult->mailboxUsage : $apiResult->disk_usage,
-            'disklimit'  => $apiResult->disk_limit,
-            'bwusage'    => $apiResult->bw_usage,
-            'bwlimit'   => $apiResult->bw_limit,
+            'disklimit'  => ($customValues['product'] == SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER) ? 'N/A' : $apiResult->disk_limit,
+            'bwusage'    => ($customValues['product'] == SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER) ? 'N/A' : $apiResult->bw_usage,
+            'bwlimit'   => ($customValues['product'] == SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER) ? 'N/A' : $apiResult->bw_limit,
             'lastupdate' => DB::raw('now()')
         ];
         
