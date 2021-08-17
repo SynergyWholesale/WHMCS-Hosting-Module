@@ -14,6 +14,10 @@ Synergy Wholesale WHMCS Hosting Module
 
 ### Removed
 
+## 1.6.9 [Updated 17/08/2021]
+### Changed
+- Added default nameservers and hostname when first creating the 'Synergy Wholesale' server.
+
 ## 1.6.7 [Updated 10/03/2021]
 ### Fixed
 - Added support for service status to synchronise function
