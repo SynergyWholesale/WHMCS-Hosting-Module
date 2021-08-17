@@ -14,7 +14,7 @@ Synergy Wholesale WHMCS Hosting Module
 
 ### Removed
 
-## 1.6.8 [Updated 10/03/2021]
+## 1.6.8 [Updated 16/08/2021]
 ### Added
 - Added Support for mail disk usage
 
