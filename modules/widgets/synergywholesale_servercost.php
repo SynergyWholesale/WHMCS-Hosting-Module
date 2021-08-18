@@ -71,7 +71,7 @@ class CostWidget extends AbstractWidget
     public function generateOutput($result)
     {
         // Get if button is clicked
-        $syncCost = App::getFromRequest('synccost');
+        $syncCost = App::getFromRequest('sync_cost');
         $content = "";
 
         // Find current SWS Server
@@ -114,6 +114,11 @@ class CostWidget extends AbstractWidget
                                 ->where('name', 'Synergy Wholesale')
                                 ->update(['monthlycost' => $cost]);
 
+                            // Refetch it in case we synced
+                            $query = DB::table('tblservers')
+                                ->where('name', 'Synergy Wholesale')
+                                ->first();
+
                             $content .= "<div style='text-align: center; color: green; font-weight: bold; font-size: 12px; padding: 16px;'> Successfully synced server cost.</div>";
                         } else {
                             $content .= "<div style='text-align: center; color: red; font-weight: bold; font-size: 12px; padding: 16px;'> Failed to get plan information, please try again.</div>";
@@ -126,18 +131,13 @@ class CostWidget extends AbstractWidget
                 }
             }
 
-            // Refetch it in case we synced
-            $query = DB::table('tblservers')
-                ->where('name', 'Synergy Wholesale')
-                ->first();
-
             $content .= "<div style='text-align: center; color: green; font-weight: bold; font-size: 18px; padding: 8px;'>Monthly Cost: $" . number_format($query->monthlycost, 2) . "</div>";
-            $content .= "<div  style='text-align: center; padding: 8px;' > <button type='button' id='synccost' class='btn btn-sm btn-info'>Sync Cost</button></div>";
+            $content .= "<div style='text-align: center; padding: 8px;'> <button type='button' id='sync_cost' class='btn btn-sm btn-info'>Sync Cost</button></div>";
             $content .= "
                 <script>
                 $(document).ready(function() {
-                    $('#synccost').click(function() {
-                        refreshWidget('CostWidget', 'synccost=1');
+                    $('#sync_cost').click(function() {
+                        refreshWidget('CostWidget', 'sync_cost=1');
                     });
                 });
                 </script>
