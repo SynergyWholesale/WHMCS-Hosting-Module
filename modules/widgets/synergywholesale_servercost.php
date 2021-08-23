@@ -128,6 +128,10 @@ class CostWidget extends AbstractWidget
         foreach ($activeServicesPlans as $key => $value) {
             $planData = $plans->where('name', $key)->first();
 
+            if (!$planData) {
+                continue;
+            }
+
             $cost = bcadd($cost, bcmul($planData->price, $value, 2), 2);
         }
 
