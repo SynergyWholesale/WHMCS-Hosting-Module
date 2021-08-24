@@ -14,6 +14,10 @@ Synergy Wholesale WHMCS Hosting Module
 
 ### Removed
 
+## 1.6.9 [Updated 25/08/2021]
+### Added
+- Added widget to sync synergy server cost
+
 ## 1.6.7 [Updated 10/03/2021]
 ### Fixed
 - Added support for service status to synchronise function
