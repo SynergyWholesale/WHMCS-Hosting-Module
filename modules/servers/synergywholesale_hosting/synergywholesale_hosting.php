@@ -725,75 +725,14 @@ function synergywholesale_hosting_get_login($params)
         'whmcs_ver' => $params['whmcsVersion'],
         'whmcs_mod_ver' => $params['configoption5']
     ];
-    $apiResult = synergywholesale_hosting_api($resellerId, $apiKey, 'hostingGetService', $data);
-    try {
-        return synergywholesale_hosting_getLoginUrl($apiResult->username, $apiResult->password, $apiResult->server, $apiResult->product);
-    } catch (\Exception $e) {
+    $apiResult = synergywholesale_hosting_api($resellerId, $apiKey, 'hostingGetLogin', $data);
+
+    if ($apiResult->status == 'OK') {
+        return $apiResult->url;
+    } else {
         logModuleCall('Synergy Hosting', 'login', $data, ['exception' => get_class($e), 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-    }
-    
-    return false;
-}
 
-function synergywholesale_hosting_getLoginUrl($user, $pass, $hostname, $product = SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER, $service = 'cpanel', $goto = '/')
-{
-    switch ($product) {
-        case SYNERGYWHOLESALE_CUSTOM_HOSTING_IDENTIFIER:
-            $servicePorts = [
-                'cpanel' => 2083,
-                'whm' => 2087,
-                'webmail' => 2096
-            ];
-            $port = isset($servicePorts[$service]) ? $servicePorts[$service] : $servicePorts['cpanel'];
-            $postFields = [
-                'user' => $user,
-                'pass' => $pass,
-                'goto_uri' => $goto
-            ];
-            $url = 'https://' . $hostname . ':' . $port;
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url . '/login');
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postFields));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Connection' => 'close']);
-            curl_setopt($ch, CURLOPT_HEADER, true);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-            $page = curl_exec($ch);
-            if (curl_errno($ch)) {
-                $error_msg = curl_error($ch);
-            }
-
-            if (isset($error_msg)) {
-                return $error_msg;
-            }
-
-            curl_close($ch);
-            $session = $token = [];
-            if (!preg_match('/session=([^\;]+)/', $page, $session)) {
-                return false;
-            }
-            if (!preg_match('|<META HTTP-EQUIV="refresh"[^>]+URL=/(cpsess\d+)/|i', $page, $token)) {
-                return false;
-            }
-
-            return sprintf(
-                '%s/%s/login/?session=%s',
-                $url,
-                $token[1],
-                $session[1],
-                $goto == '/' ? '' : '&goto_uri=' . urlencode($goto)
-            );
-        case SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER:
-            $baseUrl = 'https://' . $hostname;
-            $defaultQuery = http_build_query([
-                'action' => 'login',
-                'username' => $user,
-                'password' => $pass,
-                'custom' => 'ajaxdirect'
-            ]);
-
-            return "{$baseUrl}/?{$defaultQuery}";
+        return false;
     }
 }
 

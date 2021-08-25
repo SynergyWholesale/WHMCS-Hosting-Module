@@ -14,6 +14,10 @@ Synergy Wholesale WHMCS Hosting Module
 
 ### Removed
 
+## 1.7.0 [Updated 25/08/2021]
+### Changed
+- Updated how the login passthrough URL is created, This now uses the new endpoint.
+
 ## 1.6.7 [Updated 10/03/2021]
 ### Fixed
 - Added support for service status to synchronise function
