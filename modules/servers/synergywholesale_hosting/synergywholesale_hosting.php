@@ -727,12 +727,15 @@ function synergywholesale_hosting_get_login($params)
     ];
     $apiResult = synergywholesale_hosting_api($resellerId, $apiKey, 'hostingGetLogin', $data);
 
-    if ($apiResult->status == 'OK') {
-        return $apiResult->url;
-    } else {
+    try {
+        $apiResult = synergywholesale_hosting_api($resellerId, $apiKey, 'hostingGetLogin', $data);
+        if ($apiResult->status == 'OK') {
+            return $apiResult->url;
+        } else {
+            return false;
+        }
+    } catch (\Execption $e) {
         logModuleCall('Synergy Hosting', 'login', $data, ['exception' => get_class($e), 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-
-        return false;
     }
 }
 
