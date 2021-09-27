@@ -14,7 +14,7 @@ Synergy Wholesale WHMCS Hosting Module
 
 ### Removed
 
-## 1.6.9 [Updated 17/08/2021]
+## 1.6.8 [Updated 17/08/2021]
 ### Changed
 - Added default nameservers and hostname when first creating the 'Synergy Wholesale' server.
 
