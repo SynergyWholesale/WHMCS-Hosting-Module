@@ -14,9 +14,18 @@ Synergy Wholesale WHMCS Hosting Module
 
 ### Removed
 
+
 ## 1.7.0 [Updated 25/08/2021]
 ### Changed
 - Updated how the login passthrough URL is created, This now uses the new endpoint.
+
+## 1.6.9 [Updated 25/08/2021]
+### Added
+- Added widget to sync synergy server cost
+
+## 1.6.8 [Updated 17/08/2021]
+### Changed
+- Added default nameservers and hostname when first creating the 'Synergy Wholesale' server.
 
 ## 1.6.7 [Updated 10/03/2021]
 ### Fixed
