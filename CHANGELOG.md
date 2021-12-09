@@ -2,7 +2,7 @@
 
 Synergy Wholesale WHMCS Hosting Module
 
-## Unreleased Version [Updated xx/xx/2020]
+## Unreleased Version [Updated xx/xx/20xx]
 ### Added
 -
 
@@ -14,9 +14,20 @@ Synergy Wholesale WHMCS Hosting Module
 
 ### Removed
 
-## 1.6.8 [Updated 16/08/2021]
+## 1.6.9 [Updated 09/12/2021]
+
+### Fixed
+- Resolve issues with syncing disk and bandwidth usage for Hosting and Email services.
+
+## 1.6.8 [Updated 27/09/2021]
 ### Added
-- Added Support for mail disk usage
+- Added a new widget to display current monthly cost of services within your Synergy Wholesale reseller account
+  - This will also set the "Monthly Cost" on the Synergy Wholesale Server to the same value.
+  - Value displayed is in AUD
+
+### Changed
+- Added default nameservers and hostname when first creating the 'Synergy Wholesale' server.
+- Utilise new Synergy API endpoint for getting login URLs for Web and Email Hosting services.
 
 ## 1.6.7 [Updated 10/03/2021]
 ### Fixed
