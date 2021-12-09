@@ -14,6 +14,11 @@ Synergy Wholesale WHMCS Hosting Module
 
 ### Removed
 
+## 1.6.9 [Updated 09/12/2021]
+
+### Fixed
+- Resolve issues with syncing disk and bandwidth usage for Hosting and Email services.
+
 ## 1.6.8 [Updated 27/09/2021]
 ### Added
 - Added a new widget to display current monthly cost of services within your Synergy Wholesale reseller account

@@ -340,10 +340,10 @@ function synergywholesale_hosting_synchronize($params)
             'domainstatus' => isset($hostingStatus[$apiResult->status]) ? $hostingStatus[$apiResult->status] : $params['status'],
             'dedicatedip' => $apiResult->dedicatedIPv4,
             'password' => encrypt($apiResult->password),
-            'diskusage'   => $apiResult->disk_usage,
-            'disklimit'  => $apiResult->disk_limit,
-            'bwusage'    => $apiResult->bw_usage,
-            'bwlimit'   => $apiResult->bw_limit,
+            'diskusage'   => $apiResult->diskUsage,
+            'disklimit'  => $apiResult->diskLimit,
+            'bwusage'    => ($customValues['product'] == SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER) ? 'N/A' : $apiResult->bandwidth,
+            'bwlimit'   => ($customValues['product'] == SYNERGYWHOLESALE_EMAIL_HOSTING_IDENTIFIER) ? 'N/A' : $apiResult->bandwidthLimit,
             'lastupdate' => DB::raw('now()')
         ];
         
