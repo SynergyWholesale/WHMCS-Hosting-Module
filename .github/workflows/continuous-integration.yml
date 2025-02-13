@@ -1,0 +1,49 @@
+name: Continuous Integration
+
+on: 
+  workflow_dispatch:
+  push:
+    branches: [ master, main ]
+    paths:
+      - '**.php'
+      - '**.js'
+      - '**.ts'
+      - '**.json'
+      - '**.lock'
+  pull_request:
+    branches: [ master, main ]
+    paths:
+      - '**.php'
+      - '**.js'
+      - '**.ts'
+      - '**.json'
+      - '**.lock'
+
+jobs:
+  php:
+    name: PHP ${{ matrix.php-versions }} Test
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        php-versions: ['7.2', '7.3', '7.4', '8.1', '8.2']
+    
+    steps:
+      - uses: actions/checkout@v4
+  
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: soap
+          tools: composer, phpcs, phpunit:8.5.29
+          coverage: pcov
+
+      - name: Install PHP Dependencies
+        uses: ramsey/composer-install@v3
+     
+      - name: Check Style
+        run: phpcs
+  
+      - name: Run Tests
+        run: phpunit
