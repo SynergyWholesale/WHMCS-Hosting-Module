@@ -14,6 +14,12 @@ Synergy Wholesale WHMCS Hosting Module
 
 ### Removed
 
+
+## 1.6.10 [Updated 10/06/2025]
+
+### Fixed
+- Incorrect SPF record displayed on Email Hosting services
+
 ## 1.6.9 [Updated 09/12/2021]
 
 ### Fixed
